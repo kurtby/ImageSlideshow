@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomImageView: UIView {
+public class CustomImageView: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)

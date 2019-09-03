@@ -11,7 +11,7 @@ public class MediaView: UIView {
     
     public let imageView = UIImageView()
     
- //  public let videoView = VideoView()
+   public let videoView = VideoView()
  
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,14 +25,15 @@ public class MediaView: UIView {
     
     override open func layoutSubviews() {
         super.layoutSubviews()
-        
-      //  imageView.frame = self.frame
+       // imageView.frame = self.frame
     }
     
     internal func setup() {
-     //   imageView.clipsToBounds = true
-      //  imageView.contentMode = .scaleAspectFill
-       // addSubview(imageView)
+        imageView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+         imageView.clipsToBounds = true
+       imageView.contentMode = .scaleAspectFill
+ 
+      addSubview(imageView)
     }
     
 }
