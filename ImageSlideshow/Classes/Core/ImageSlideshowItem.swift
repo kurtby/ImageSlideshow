@@ -155,7 +155,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     func releaseImage() {
         imageReleased = true
         cancelPendingLoad()
-        self.mediaView.image = nil
+        self.mediaView.imageView.image = nil
     }
     
     public func cancelPendingLoad() {

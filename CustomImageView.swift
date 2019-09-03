@@ -1,18 +1,14 @@
 //
-//  MediaView.swift
-//  ImageSlideshow
+//  CustomImageView.swift
+//  ActiveLabel
 //
 //  Created by Valentine Eyiubolu on 9/3/19.
 //
 
 import UIKit
 
-public class MediaView: UIView {
+class CustomImageView: UIView {
     
-    public let imageView = UIImageView()
-    
- //  public let videoView = VideoView()
- 
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -26,13 +22,14 @@ public class MediaView: UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-      //  imageView.frame = self.frame
+        //  imageView.frame = self.frame
     }
     
     internal func setup() {
-     //   imageView.clipsToBounds = true
-      //  imageView.contentMode = .scaleAspectFill
-       // addSubview(imageView)
+        //   imageView.clipsToBounds = true
+        //  imageView.contentMode = .scaleAspectFill
+        // addSubview(imageView)
     }
     
+
 }
