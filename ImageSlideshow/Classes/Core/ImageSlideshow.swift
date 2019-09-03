@@ -198,7 +198,7 @@ open class ImageSlideshow: UIView {
     open var contentScaleMode: UIViewContentMode = UIViewContentMode.scaleAspectFit {
         didSet {
             for view in slideshowItems {
-                view.imageView.contentMode = contentScaleMode
+                view.mediaView.imageView.contentMode = contentScaleMode
             }
         }
     }
@@ -317,7 +317,7 @@ open class ImageSlideshow: UIView {
         var i = 0
         for image in scrollViewImages {
             let item = ImageSlideshowItem(image: image, zoomEnabled: zoomEnabled, activityIndicator: activityIndicator?.create(), maximumScale: maximumScale)
-            item.imageView.contentMode = contentScaleMode
+            item.mediaView.imageView.contentMode = contentScaleMode
             slideshowItems.append(item)
             scrollView.addSubview(item)
             i += 1

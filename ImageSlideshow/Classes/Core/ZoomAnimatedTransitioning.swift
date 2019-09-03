@@ -157,7 +157,7 @@ class ZoomAnimator: NSObject {
 
     init(referenceSlideshowView: ImageSlideshow, parent: ZoomAnimatedTransitioningDelegate) {
         self.referenceSlideshowView = referenceSlideshowView
-        self.referenceImageView = referenceSlideshowView.currentSlideshowItem?.imageView
+        self.referenceImageView = referenceSlideshowView.currentSlideshowItem?.mediaView.imageView
         self.parent = parent
         super.init()
     }
@@ -283,10 +283,10 @@ class ZoomOutAnimator: ZoomAnimator, UIViewControllerAnimatedTransitioning {
         #endif
         var transitionViewInitialFrame: CGRect
         if let currentSlideshowItem = fromViewController.slideshow.currentSlideshowItem {
-            if let image = currentSlideshowItem.imageView.image {
-                transitionViewInitialFrame = image.tgr_aspectFitRectForSize(currentSlideshowItem.imageView.frame.size)
+            if let image = currentSlideshowItem.mediaView.imageView.image {
+                transitionViewInitialFrame = image.tgr_aspectFitRectForSize(currentSlideshowItem.mediaView.imageView.frame.size)
             } else {
-                transitionViewInitialFrame = currentSlideshowItem.imageView.frame
+                transitionViewInitialFrame = currentSlideshowItem.mediaView.imageView.frame
             }
             transitionViewInitialFrame = containerView.convert(transitionViewInitialFrame, from: currentSlideshowItem)
         } else {
@@ -301,7 +301,7 @@ class ZoomOutAnimator: ZoomAnimator, UIViewControllerAnimatedTransitioning {
             transitionViewFinalFrame = referenceSlideshowViewFrame
 
             // do a frame scaling when AspectFit content mode enabled
-            if fromViewController.slideshow.currentSlideshowItem?.imageView.image != nil && referenceImageView.contentMode == UIViewContentMode.scaleAspectFit {
+            if fromViewController.slideshow.currentSlideshowItem?.mediaView.imageView.image != nil && referenceImageView.contentMode == UIViewContentMode.scaleAspectFit {
                 transitionViewFinalFrame = containerView.convert(referenceImageView.aspectToFitFrame(), from: referenceImageView)
             }
 
@@ -322,7 +322,7 @@ class ZoomOutAnimator: ZoomAnimator, UIViewControllerAnimatedTransitioning {
         containerView.sendSubview(toBack: transitionBackgroundView)
         #endif
 
-        let transitionView: UIImageView = UIImageView(image: fromViewController.slideshow.currentSlideshowItem?.imageView.image)
+        let transitionView: UIImageView = UIImageView(image: fromViewController.slideshow.currentSlideshowItem?.mediaView.imageView.image)
         transitionView.contentMode = UIViewContentMode.scaleAspectFill
         transitionView.clipsToBounds = true
         transitionView.frame = transitionViewInitialFrame

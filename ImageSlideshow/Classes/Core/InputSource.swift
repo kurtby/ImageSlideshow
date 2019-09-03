@@ -9,7 +9,10 @@
 import UIKit
 
 /// A protocol that can be adapted by different Input Source providers
+
 @objc public protocol InputSource {
+    
+    var sourceType: Int { get set }
     /**
      Load image from the source to image view.
      - parameter imageView: Image view to load the image into.
@@ -18,24 +21,26 @@ import UIKit
      */
     func load(to imageView: UIImageView, with callback: @escaping (_ image: UIImage?) -> Void)
     
-    optional func loadVideo()
-    
     /**
      Cancel image load on the image view
      - parameter imageView: Image view that is loading the image
     */
     @objc optional func cancelLoad(on imageView: UIImageView)
+    
 }
 
 /// Input Source to load plain UIImage
 @objcMembers
 open class ImageSource: NSObject, InputSource {
+    public var sourceType: Int = 0
+    
     var image: UIImage
 
     /// Initializes a new Image Source with UIImage
     /// - parameter image: Image to be loaded
     public init(image: UIImage) {
         self.image = image
+        
     }
 
     /// Initializes a new Image Source with an image name from the main bundle
@@ -59,6 +64,8 @@ open class ImageSource: NSObject, InputSource {
 /// Input Source to load an image from the main bundle
 @objcMembers
 open class BundleImageSource: NSObject, InputSource {
+    
+    public var sourceType: Int = 0
     var imageString: String
     
     /// Initializes a new Image Source with an image name from the main bundle
@@ -78,6 +85,8 @@ open class BundleImageSource: NSObject, InputSource {
 /// Input Source to load an image from a local file path
 @objcMembers
 open class FileImageSource: NSObject, InputSource {
+    
+    public var sourceType: Int = 0
     var path: String
     
     /// Initializes a new Image Source with an image name from the main bundle

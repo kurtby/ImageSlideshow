@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import AVFoundation
 
 /// Used to wrap a single slideshow item and allow zooming on it
 @objcMembers
 open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Image view to hold the image
-    public let imageView = UIImageView()
+  //  public let imageView = UIImageView()
+    
+    public let mediaView = MediaView()
 
     /// Activity indicator shown during image loading, when nil there won't be shown any
     public let activityIndicator: ActivityIndicatorView?
@@ -58,8 +61,16 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
         super.init(frame: CGRect.null)
 
-        imageView.clipsToBounds = true
-        imageView.isUserInteractionEnabled = true
+        if image.sourceType == MediaType.image.rawValue {
+            
+        }
+        else if image.sourceType == MediaType.video.rawValue  {
+            
+        }
+        mediaView.clipsToBounds = true
+        
+//        imageView.clipsToBounds = true
+//        imageView.isUserInteractionEnabled = true
 
         setPictoCenter()
 
@@ -67,7 +78,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         delegate = self
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
-        addSubview(imageView)
+        addSubview(mediaView)
         minimumZoomScale = 1.0
         maximumZoomScale = calculateMaximumScale()
 
@@ -78,13 +89,13 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         // tap gesture recognizer
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ImageSlideshowItem.tapZoom))
         tapRecognizer.numberOfTapsRequired = 2
-        imageView.addGestureRecognizer(tapRecognizer)
+        mediaView.addGestureRecognizer(tapRecognizer)
         gestureRecognizer = tapRecognizer
 
         singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(retryLoadImage))
         singleTapGestureRecognizer!.numberOfTapsRequired = 1
         singleTapGestureRecognizer!.isEnabled = false
-        imageView.addGestureRecognizer(singleTapGestureRecognizer!)
+        mediaView.addGestureRecognizer(singleTapGestureRecognizer!)
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -95,9 +106,9 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         super.layoutSubviews()
 
         if !zoomEnabled {
-            imageView.frame.size = frame.size
+            mediaView.frame.size = frame.size
         } else if !isZoomed() {
-            imageView.frame.size = calculatePictureSize()
+            mediaView.frame.size = calculatePictureSize()
         }
 
         if isFullScreen() {
@@ -106,7 +117,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
             setPictoCenter()
         }
 
-        self.activityIndicator?.view.center = imageView.center
+        self.activityIndicator?.view.center = mediaView.center
 
         // if self.frame was changed and zoomInInitially enabled, zoom in
         if lastFrame != frame && zoomInInitially {
@@ -115,22 +126,22 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
         lastFrame = self.frame
 
-        contentSize = imageView.frame.size
+        contentSize = mediaView.frame.size
         maximumZoomScale = calculateMaximumScale()
     }
 
     /// Request to load Image Source to Image View
     public func loadImage() {
-        if self.imageView.image == nil && !isLoading {
+        if self.mediaView.imageView.image == nil && !isLoading {
             isLoading = true
             imageReleased = false
             activityIndicator?.show()
-            image.load(to: self.imageView) {[weak self] image in
+            image.load(to: self.mediaView.imageView) {[weak self] image in
                 // set image to nil if there was a release request during the image load
                 if let imageRelease = self?.imageReleased, imageRelease {
-                    self?.imageView.image = nil
+                    self?.mediaView.imageView.image = nil
                 }else{
-                    self?.imageView.image = image
+                    self?.mediaView.imageView.image = image
                 }
                 self?.activityIndicator?.hide()
                 self?.loadFailed = image == nil
@@ -144,11 +155,11 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     func releaseImage() {
         imageReleased = true
         cancelPendingLoad()
-        self.imageView.image = nil
+        self.mediaView.image = nil
     }
     
     public func cancelPendingLoad() {
-        image.cancelLoad?(on: imageView)
+        image.cancelLoad?(on: mediaView.imageView)
     }
 
     @objc func retryLoadImage() {
@@ -178,7 +189,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     fileprivate func calculatePictureSize() -> CGSize {
-        if let image = imageView.image, imageView.contentMode == .scaleAspectFit {
+        if let image = mediaView.imageView.image, mediaView.imageView.contentMode == .scaleAspectFit {
             let picSize = image.size
             let picRatio = picSize.width / picSize.height
             let screenRatio = screenSize().width / screenSize().height
@@ -198,15 +209,15 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     fileprivate func setPictoCenter() {
-        var intendHorizon = (screenSize().width - imageView.frame.width ) / 2
-        var intendVertical = (screenSize().height - imageView.frame.height ) / 2
+        var intendHorizon = (screenSize().width - mediaView.frame.width ) / 2
+        var intendVertical = (screenSize().height - mediaView.frame.height ) / 2
         intendHorizon = intendHorizon > 0 ? intendHorizon : 0
         intendVertical = intendVertical > 0 ? intendVertical : 0
         contentInset = UIEdgeInsets(top: intendVertical, left: intendHorizon, bottom: intendVertical, right: intendHorizon)
     }
 
     private func isFullScreen() -> Bool {
-        return imageView.frame.width >= screenSize().width && imageView.frame.height >= screenSize().height
+        return mediaView.frame.width >= screenSize().width && mediaView.frame.height >= screenSize().height
     }
 
     func clearContentInsets() {
@@ -220,7 +231,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return zoomEnabled ? imageView : nil
+        return zoomEnabled ? mediaView : nil
     }
 
 }
