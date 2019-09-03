@@ -67,6 +67,12 @@ Image slideshow is a Swift library providing customizable image slideshow with c
     subspec.source_files = 'ImageSlideshow/Classes/InputSources/ParseSource.swift'
   end
 
+  s.subspec 'CustomMedia' do |subspec|
+    subspec.dependency 'ImageSlideshow/Core'
+    subspec.dependency 'AlamofireImage', '~> 3.0'
+    subspec.source_files = 'ImageSlideshow/Classes/InputSources/MediaSource.swift'
+  end
+
   s.default_subspec = 'Core'
 
 end
